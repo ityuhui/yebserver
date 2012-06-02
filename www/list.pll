@@ -1,0 +1,25 @@
+#! /usr/bin/perl
+
+use strict;
+use warnings;
+
+
+my $dir = $ARGV[0];
+&print_html_header("hello");
+if( -e $dir && -d $dir){
+    opendir DH,$dir or die "Can not open the directory: $dir";
+    foreach my $file (readdir DH){
+        print "<a href=$dir/$file>$file</a></br>";
+    }
+    closedir DH;
+}
+&print_html_footer;
+
+sub print_html_header{
+    print "<html><head><title>$_[0]</title></head><body>"
+}
+
+
+sub print_html_footer{
+    print "</body></html>";
+}
