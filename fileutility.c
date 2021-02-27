@@ -48,6 +48,9 @@ file_t get_file_type(const char *filename)
             strstr(filename,".pr")){
            res = FILE_PERL;
     }
+    else if (strstr(filename,".py")) {
+        res = FILE_PYTHON;
+    }
     return res;
 }
 
@@ -86,12 +89,12 @@ int get_file_size(const char *filename)
     return buf.st_size;
 }
 
-op_t call_perl_interpreter(uufile_t *file_info,char *send_buffer,int buffer_size){
-    
+op_t call_interpreter (const char *interpreter, uufile_t *file_info,char *send_buffer,int buffer_size)
+{
     op_t res = OP_FAIL;
     char *cmd = (char *)malloc(CMD_STRING_MAX*sizeof(char));
     memset(cmd,0,CMD_STRING_MAX);
-    sprintf(cmd,"perl %s %s",file_info->name,file_info->argv);
+    sprintf(cmd,"%s %s %s", interpreter, file_info->name, file_info->argv);
 
     FILE *fp = popen(cmd,"r");
 
@@ -105,14 +108,18 @@ op_t call_perl_interpreter(uufile_t *file_info,char *send_buffer,int buffer_size
     }
     pclose(fp);
     free(cmd);
-    return res;
+    return res;    
 }
 
 op_t handle_request_file(uufile_t *file_info,char *send_buffer,int buffer_size)
 {
     op_t res = OP_FAIL;
     if( FILE_PERL == file_info->type){
-        if( OP_SUCCESS == call_perl_interpreter(file_info,send_buffer,buffer_size)){
+        if( OP_SUCCESS == call_interpreter("perl", file_info,send_buffer,buffer_size)){
+            res = OP_SUCCESS;
+        }
+    } else if (FILE_PYTHON == file_info->type) {
+        if( OP_SUCCESS == call_interpreter("python3", file_info,send_buffer,buffer_size)){
             res = OP_SUCCESS;
         }
     }

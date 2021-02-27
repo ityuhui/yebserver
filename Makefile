@@ -1,6 +1,6 @@
 OBJECTS=main.o initserver.o fileutility.o httprotocol.o
 TARGET=uuwebserver
-CFLAGS=-W
+CFLAGS=-W -g
 
 $(TARGET):$(OBJECTS)
 	gcc $(CFLAGS) -o $(TARGET) $(OBJECTS)

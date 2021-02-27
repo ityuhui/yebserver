@@ -27,11 +27,12 @@ typedef enum {
 }exist_t;
 
 typedef enum {
-    FILE_TEXT   = 1,
-    FILE_BINARY = 2,
-    FILE_PERL   = 3,
-    FILE_PHP    = 4,
-    FILE_JSP    = 5
+    FILE_TEXT   =   1,
+    FILE_BINARY =   2,
+    FILE_PERL   =   3,
+    FILE_PHP    =   4,
+    FILE_JSP    =   5,
+    FILE_PYTHON =   6
 }file_t;
 
 typedef enum {
