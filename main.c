@@ -26,6 +26,7 @@
 
 #include "httprotocol.h"
 #include "fileutility.h"
+#include "interceptor.h"
 
 #define QLEN 10
 #define VISIT_FILE_NAME 100
@@ -58,7 +59,7 @@ void get_requested_file_info(const char * recv_buffer,uufile_t *fileinfo)
     if( FILE_NOT_EXIST == is_exist(fileinfo->name)){
         strncpy(fileinfo->name,"www/notfound.html",VISIT_FILE_NAME);
     }
-    printf("all file name is: %s\n",fileinfo->name);
+    printf("The required file name is: %s\n",fileinfo->name);
 
     fileinfo->type = get_file_type(fileinfo->name);
     fileinfo->size = get_file_size(fileinfo->name); 
@@ -70,6 +71,8 @@ void onAccept(int sockfd)
     char receive_buffer[RECEIVE_BUFFER_SIZE]={0,};
     recv(sockfd,receive_buffer,RECEIVE_BUFFER_SIZE,0);
     printf("%s\n",receive_buffer);
+
+    interceptor(receive_buffer, sizeof(receive_buffer));
 
     uufile_t req_file_info;
     init_file_info(&req_file_info);
