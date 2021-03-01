@@ -17,7 +17,7 @@
 #ifndef HTTPROTOCOL
 #define HTTPROTOCOL
 
-extern void interceptor(const char *, int);
+extern void get_visit_file_name_and_argv(const char *,char *,char *,int);
 
 
 #endif

@@ -21,6 +21,7 @@
 #include <errno.h>
 #include <syslog.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include <sys/socket.h>
 #include <sys/wait.h>
 
@@ -57,9 +58,9 @@ void get_requested_file_info(const char * recv_buffer,uufile_t *fileinfo)
         strncat(fileinfo->name,visit_file_name_local,VISIT_FILE_NAME);
     }
     if( FILE_NOT_EXIST == is_exist(fileinfo->name)){
-        strncpy(fileinfo->name,"www/notfound.html",VISIT_FILE_NAME);
+        strncpy(fileinfo->name,"www/404.html",VISIT_FILE_NAME);
     }
-    printf("The required file name is: %s\n",fileinfo->name);
+    printf("The required file name is: %s\n\n",fileinfo->name);
 
     fileinfo->type = get_file_type(fileinfo->name);
     fileinfo->size = get_file_size(fileinfo->name); 
@@ -99,13 +100,13 @@ void serve(int sockfd)
     pid_t pid;
     for(;;){
         clfd = accept(sockfd,NULL,NULL);
-        printf("accept!\n");
+        printf("\nSocket is accepted:\n");
         if(clfd < 0){
-            printf("uuwebserver: accept error: %s",strerror(errno));
+            printf("yebserver: accept error: %s",strerror(errno));
             exit(EXIT_ERROR);
         }
         if( (pid = fork()) < 0){
-            printf("uuwebserver: fork error: %s",strerror(errno));
+            printf("yebserver: fork error: %s",strerror(errno));
         }
         else if( 0 == pid){
             onAccept(clfd);
@@ -135,7 +136,7 @@ int main(int argc,char *argv[])
     hint.ai_next        = NULL;
 
     if( (err = getaddrinfo(NULL,"www",&hint,&ailist)) != 0 ){
-        printf("uuwebserver getaddrinfo error: %s\n",gai_strerror(errno));
+        printf("yebserver getaddrinfo error: %s\n",gai_strerror(errno));
         exit(EXIT_ERROR);
     }
 

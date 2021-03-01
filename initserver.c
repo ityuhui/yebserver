@@ -17,6 +17,7 @@
 #include <errno.h>
 #include <sys/socket.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <netinet/in.h>
 
 int initserver(int type,const struct sockaddr *addr,socklen_t alen,int qlen)

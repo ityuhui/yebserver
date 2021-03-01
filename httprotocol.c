@@ -6,7 +6,7 @@
  *    Description:  
  *
  *        Version:  1.0
- *        Created:  2012年02月17日 19时28分27秒
+ *        Created:  2012-02-17 19:28:27
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -15,6 +15,7 @@
  */
 
 #include <string.h>
+#include <stdlib.h>
 #include "httprotocol.h"
 
 void get_visit_file_name_and_argv(const char *s,char *visit_name,char *visit_argv,int argv_buffer_size)
