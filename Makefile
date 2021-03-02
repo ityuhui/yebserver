@@ -1,4 +1,4 @@
-OBJECTS=main.o initserver.o fileutility.o httprotocol.o interceptor.o
+OBJECTS=main.o initserver.o fileutility.o httprotocol.o interceptor.o log.o
 TARGET=yebserver
 CFLAGS=-W -g
 
@@ -19,6 +19,9 @@ httprotocol.o:
 
 interceptor.o:
 	gcc $(CFLAGS) -c interceptor.c
+
+log.o:
+	gcc $(CFLAGS) -c yclog/log.c
 
 .PHONY : clean
 clean:

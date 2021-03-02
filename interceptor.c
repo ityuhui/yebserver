@@ -5,10 +5,11 @@
 #include <unistd.h>
 #include <sys/reboot.h>
 #include <linux/reboot.h>
+#include "yclog/log.h"
 
 static bool shutdown(const char *request, int request_buffer_size)
 {
-    printf("Received a request to poweroff\n");
+    print_log(WARNING, "Received a request to poweroff the host.\n");
     reboot(LINUX_REBOOT_CMD_POWER_OFF);
     return true;
 }

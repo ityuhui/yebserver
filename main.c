@@ -28,6 +28,7 @@
 #include "httprotocol.h"
 #include "fileutility.h"
 #include "interceptor.h"
+#include "yclog/log.h"
 
 #define QLEN 10
 #define VISIT_FILE_NAME 100
@@ -60,7 +61,7 @@ void get_requested_file_info(const char * recv_buffer,uufile_t *fileinfo)
     if( FILE_NOT_EXIST == is_exist(fileinfo->name)){
         strncpy(fileinfo->name,"www/404.html",VISIT_FILE_NAME);
     }
-    printf("The required file name is: %s\n\n",fileinfo->name);
+    print_log(DEBUG, "The required file name is: %s\n\n",fileinfo->name);
 
     fileinfo->type = get_file_type(fileinfo->name);
     fileinfo->size = get_file_size(fileinfo->name); 
@@ -71,7 +72,7 @@ void onAccept(int sockfd)
 {
     char receive_buffer[RECEIVE_BUFFER_SIZE]={0,};
     recv(sockfd,receive_buffer,RECEIVE_BUFFER_SIZE,0);
-    printf("%s\n",receive_buffer);
+    print_log(DEBUG, "%s\n",receive_buffer);
 
     interceptor(receive_buffer, sizeof(receive_buffer));
 
@@ -100,13 +101,13 @@ void serve(int sockfd)
     pid_t pid;
     for(;;){
         clfd = accept(sockfd,NULL,NULL);
-        printf("\nSocket is accepted:\n");
+        print_log(DEBUG, "Socket is accepted:\n");
         if(clfd < 0){
-            printf("yebserver: accept error: %s",strerror(errno));
+            print_log(ERROR, "yebserver: accept error: %s\n",strerror(errno));
             exit(EXIT_ERROR);
         }
         if( (pid = fork()) < 0){
-            printf("yebserver: fork error: %s",strerror(errno));
+            print_log(ERROR, "yebserver: fork error: %s\n",strerror(errno));
         }
         else if( 0 == pid){
             onAccept(clfd);
@@ -123,7 +124,15 @@ void serve(int sockfd)
 int main(int argc,char *argv[])
 {
     char fname[] = "main";
-    printf("%s: Starts up...\n", fname);   
+
+    init_log(DEBUG, /*log mask*/
+        true, /* print to stderr */            
+        "yeb.log", /* log file name */
+        10, /* max size (by MB) per file */
+        10  /* rotation number */
+    );
+
+    print_log(INFO, "%s: Starts up...\n", fname);   
 
     struct addrinfo *ailist,*aip;
     struct addrinfo hint;
@@ -139,11 +148,11 @@ int main(int argc,char *argv[])
     hint.ai_next        = NULL;
 
     if( (err = getaddrinfo(NULL,"www",&hint,&ailist)) != 0 ){
-        printf("yebserver getaddrinfo error: %s\n",gai_strerror(errno));
+        print_log(ERROR, "yebserver getaddrinfo error: %s\n",gai_strerror(errno));
         exit(EXIT_ERROR);
     }
 
-    printf("%s: Got addr info\n", fname);   
+    print_log(INFO, "%s: Got addr info.\n", fname);   
     
     for(aip = ailist;aip != NULL;aip=aip->ai_next){
         if((sockfd = initserver(SOCK_STREAM,aip->ai_addr,aip->ai_addrlen,QLEN)) >= 0){
@@ -152,6 +161,6 @@ int main(int argc,char *argv[])
         }
     }
 
-    printf("%s: Cannot start web server.\n", fname);   
+    print_log(ERROR, "%s: Cannot start web server.\n", fname);   
     exit(EXIT_ERROR);
 }
