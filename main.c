@@ -6,7 +6,7 @@
  *    Description:  
  *
  *        Version:  1.0
- *        Created:  2012年02月17日 11时36分17秒
+ *        Created:  2012-02-17 11:36:17
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -122,6 +122,9 @@ void serve(int sockfd)
 
 int main(int argc,char *argv[])
 {
+    char fname[] = "main";
+    printf("%s: Starts up...\n", fname);   
+
     struct addrinfo *ailist,*aip;
     struct addrinfo hint;
     int             sockfd,err;
@@ -140,12 +143,15 @@ int main(int argc,char *argv[])
         exit(EXIT_ERROR);
     }
 
+    printf("%s: Got addr info\n", fname);   
+    
     for(aip = ailist;aip != NULL;aip=aip->ai_next){
         if((sockfd = initserver(SOCK_STREAM,aip->ai_addr,aip->ai_addrlen,QLEN)) >= 0){
             serve(sockfd);
             exit(EXIT_NORMAL);
         }
-
     }
+
+    printf("%s: Cannot start web server.\n", fname);   
     exit(EXIT_ERROR);
 }

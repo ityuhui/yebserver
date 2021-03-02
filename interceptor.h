@@ -7,4 +7,8 @@ extern "C" {
 
 extern void interceptor(const char *, int);
 
+#ifdef  __cplusplus
+}
+#endif
+
 #endif
